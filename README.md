@@ -1,8 +1,7 @@
+
 # 🚀 AWS Build a Serverless AI Chatbot with Amazon Bedrock, Lambda, API Gateway & S3 🤖
 <img width="1280" height="562" alt="chatbot" src="https://github.com/user-attachments/assets/035a1ea8-c743-46d5-a2ca-8ef2d73241b4" />
 
-
-**Serverless AI Chatbot using Amazon Bedrock**
 
 This hands-on demo guides you through creating a serverless AI chatbot on AWS.
 
@@ -50,34 +49,10 @@ Create a Lambda function:
 6. Leave architecture set to x86_64, and then choose Create function.
 7. For the Lambda function code, copy and paste the code below into your Lambda code editor:
 
-# 🚀 AWS Serverless AI Chatbot (Amazon Bedrock + Lambda + API Gateway + S3)
-
-This project demonstrates how to build a serverless AI chatbot using **Amazon Bedrock**, **AWS Lambda**, **API Gateway**, and **Amazon S3**.  
-It uses the **Titan Text G1 - Express model** for generating responses.
-
----
-
-<details>
-  <summary>🕓 Downtime Summary (click to expand)</summary>
-
-### Overview of Potential Downtime Scenarios
-
-| Cause | Description | Mitigation |
-|--------|-------------|-------------|
-| **API Gateway misconfiguration** | Missing CORS headers or incorrect integration response can cause 4xx errors. | Verify CORS setup and enable "Lambda Proxy Integration." |
-| **Lambda timeout or permissions** | IAM role missing `bedrock:InvokeModel` or `CloudWatchLogs` permissions may cause 500 errors. | Attach correct IAM policy and monitor CloudWatch logs. |
-| **Bedrock throttling** | High-frequency requests can trigger throttling errors (429). | Add retry logic or backoff mechanism in the frontend. |
-| **S3 static site access issues** | If “Block Public Access” is enabled or policy misconfigured, site becomes unavailable. | Ensure correct bucket policy and permissions. |
-| **Region mismatch** | If Bedrock model region differs from Lambda region. | Deploy Lambda in `us-east-1` for Titan models. |
-
-✅ **Tip:** Always monitor **CloudWatch Logs** and set up alarms for `5xx` errors or failed invocations.
-
-</details>
 
 ---
 <details>
-  <summary>🕓 Lambda Function (click to expand)</summary>
-## 🤖 Lambda Function — `lambda_function.py`
+  <summary>🧠 Lambda_function.py (click to expand)</summary>
 
 ```python
 import boto3
@@ -143,7 +118,11 @@ def lambda_handler(event, context):
         },
         'body': json.dumps({'response': reply})
     }
-  </details>
+```
+
+</details>
+
+
 ---
 ## ➡️ Step 3 — Set Up API Gateway (REST)
 1. Create a **REST API**.
@@ -163,11 +142,19 @@ Replace `YOUR_API_INVOKE_URL` with your deployed API Gateway endpoint, for examp
 ---
 
 ## ➡️ Step 5 — Deploy Frontend to S3 Static Website
-1. Create an S3 bucket (for example: `myaichatbotdemo`) and **disable "Block all public access"**.
-2. Upload `index.html`.
-3. Enable **Static website hosting** and set **index document** to `index.html`.
-4. Add a **Bucket Policy** (example below) to allow public `GetObject`.
-5. Open the **Object URL** to use your chatbot.
+We'll deploy our fully serverless AI chatbot to S3 for static website hosting.
+
+1. In the AWS Management Console, navigate to Amazon S3, click on "Create Bucket"
+2. For General configuration, choose choose General purpose buckets.
+3. Enter a unique bucket name, i'll name myaichatbotdemo
+4. Make sure you disable "Block all public access" to have public access.
+5. Keep everything else as default and click "Create bucket"
+6. Upload the index.html file that you created in step 5
+7. Go to "Properties" and scroll down to "Static Website Hosting" and click on "Edit"
+8. Under "Static Website Hosting", choose "Enable"
+9. Specify index.html as the index document, then click "Save"
+10. Go to "Permissions" under Bucket Policy click "Edit"
+11. Paste the Bucket Policy below, that grants read-only access to all objects (s3:GetObject) inside a specific S3 bucket
 
 **Bucket Policy (replace `your-bucket-name`)**:
 ```json
@@ -183,3 +170,23 @@ Replace `YOUR_API_INVOKE_URL` with your deployed API Gateway endpoint, for examp
     }
   ]
 }
+```
+
+---
+##
+<details>
+  <summary>🕓 Downtime Summary (click to expand)</summary>
+
+### Overview of Potential Downtime Scenarios
+
+| Cause | Description | Mitigation |
+|------|-------------|------------|
+| **API Gateway misconfiguration** | Missing CORS headers or incorrect integration response can cause 4xx errors. | Verify CORS setup and enable "Lambda Proxy Integration." |
+| **Lambda timeout or permissions** | IAM role missing `bedrock:InvokeModel` or `CloudWatchLogs` permissions may cause 500 errors. | Attach correct IAM policy and monitor CloudWatch logs. |
+| **Bedrock throttling** | High-frequency requests can trigger throttling errors (429). | Add retry logic or backoff mechanism in the frontend. |
+| **S3 static site access issues** | If “Block Public Access” is enabled or policy misconfigured, site becomes unavailable. | Ensure correct bucket policy and permissions. |
+| **Region mismatch** | If Bedrock model region differs from Lambda region. | Deploy Lambda in `us-east-1` for Titan models. |
+
+✅ **Tip:** Always monitor **CloudWatch Logs** and set up alarms for `5xx` errors or failed invocations.
+
+</details>
