@@ -173,6 +173,15 @@ We'll deploy our fully serverless AI chatbot to S3 for static website hosting.
 ```
 
 ---
+⚠️Note: Replace your-bucket-name with your actual bucket name, then click "Save"
+
+12. Go back to the S3 Bucket console, choose Objects, then click on index.html
+13. To visit your fully serverless AI chatbot Live, click on the Object URL.
+14. You should see your AI Chatbot with a stylish chat interface running on Amazon S3.
+🏆 Now you can ask the AI Chatbot anything and you will have a real-time AI responses.
+
+
+---
 ##
 <details>
   <summary>🕓 Downtime Summary (click to expand)</summary>
